@@ -1,0 +1,11 @@
+    <changeSet id="" author="pfarrell">
+        <createTable tableName="<%= @model.db_table %>">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column> <% @model.fields.each_with_index do |field, i| %>
+            <column name="<%= field.snake_case %>" type="<%= field.dbType %>">
+		<constraints nullable="false"/>
+            </column> <% end %>
+        </createTable>
+    </changeSet>
+

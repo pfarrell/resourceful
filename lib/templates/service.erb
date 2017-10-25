@@ -1,0 +1,22 @@
+package <%= @model.package %>.services
+
+import com.cursor.dao.<%= @model.name %>DAO
+import com.cursor.models.<%= @model.name %>
+import com.cursor.models.CursorPrincipal
+
+interface <%= @model.name %>Service {
+  fun find(id: Long, principal: CursorPrincipal): <%= @model.name %>
+  fun create(<%= @model.name.downcase %>: <%= @model.name %>, principal: CursorPrincipal): <%= @model.name %>
+}
+
+class <%= @model.name %>ServiceImpl(val <%= @model.name.downcase %>DAO: <%= @model.name %>DAO) : <%= @model.name %>Service {
+
+  override fun find(id: Long, principal: CursorPrincipal): <%= @model.name %> {
+	  return <%= @model.name.downcase %>DAO.find(id)
+	}
+
+	override fun create(<%= @model.name.downcase %>: <%= @model.name %>, principal: CursorPrincipal): <%= @model.name %> {
+	  val id = <%= @model.name.downcase %>DAO.insert(<%= @model.name.downcase %>)
+	  return find(id, principal)
+	}
+}

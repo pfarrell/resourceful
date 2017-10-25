@@ -1,0 +1,18 @@
+package <%= @model.package %>.mappers
+
+import com.cursor.models.<%= @model.name %>
+import org.skife.jdbi.v2.StatementContext
+import org.skife.jdbi.v2.tweak.ResultSetMapper
+import java.sql.ResultSet
+import java.sql.SQLException
+
+class <%= @model.name %>Mapper : ResultSetMapper<<%= @model.name %>> {
+
+    @Throws(SQLException::class)
+    override fun map(index: Int, resultSet: ResultSet, ctx: StatementContext?): <%= @model.name %> {
+        return <%= @model.name %>(id = resultSet.getLong("id"),
+						<% @model.fields.each_with_index do |field, i| %><%= field.name %> = resultSet.get<%= field.codeType %>("<%= field.snake_case %>")<%= ',' if i < (@model.fields.size - 1) %>
+						<% end %>
+        )
+    }
+}

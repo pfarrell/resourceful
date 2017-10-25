@@ -1,0 +1,41 @@
+package <%= @model.package %>.resources
+
+import com.cursor.models.<%= @model.name %>
+import com.cursor.models.CursorPrincipal
+import com.cursor.services.<%= @model.name %>Service
+import io.dropwizard.auth.Auth
+import io.swagger.annotations.Api
+import javax.ws.rs.Consumes
+import javax.ws.rs.GET
+import javax.ws.rs.POST
+import javax.ws.rs.PUT
+import javax.ws.rs.Path
+import javax.ws.rs.PathParam
+import javax.ws.rs.Produces
+import javax.ws.rs.core.MediaType
+import javax.ws.rs.core.Response
+import javax.ws.rs.core.Response.Status
+
+@Path("/<%= @model.name.downcase %>")
+@Api(value = "/<%= @model.name.downcase %>", description = "Manage <%= @model.name %>s")
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
+
+class <%= @model.name %>Resource(internal val <%= @model.name.downcase %>Service: <%= @model.name %>Service) {
+  
+    @GET
+		@Path("{id}")
+		fun get(@PathParam("id") id: Long, @Auth principal: CursorPrincipal): Response {
+		    return <%= @model.name.downcase %>Service.find(id, principal)?.let {
+			      Response.ok(it).build()
+			  } ?: Response.status(Status.BAD_REQUEST).build()
+		}
+
+
+		@POST
+		fun create(<%= @model.name.downcase %>: <%= @model.name %>, @Auth principal: CursorPrincipal): Response {
+		    return <%= @model.name.downcase %>Service.create(<%= @model.name.downcase %>, principal)?.let {
+			      Response.ok(it).build()
+			  } ?: Response.status(Status.BAD_REQUEST).build()
+		}
+}
