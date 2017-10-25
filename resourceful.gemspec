@@ -7,7 +7,6 @@ Gem::Specification.new do |spec|
   spec.name          = "resourceful"
   spec.version       = Resourceful::VERSION
   spec.authors       = ["Patrick Farrell"]
-  spec.email         = ["pat@cursor.com"]
 
   spec.summary       = %q{Generates code files for resources for Cursor}
   spec.description   = %q{Generates code files for resources for Cursor}
