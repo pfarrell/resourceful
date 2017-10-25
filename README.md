@@ -1,6 +1,6 @@
 # Resourceful
 
-Generates boilerplate for new Cursor Cloud Resource
+Generates boilerplate code based on templates and yaml
 
 ## Installation
 
