@@ -1,0 +1,38 @@
+package <%= @model.package %>.mappers
+
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.whenever
+import io.kotlintest.matchers.shouldBe
+import io.kotlintest.matchers.shouldEqual
+import io.kotlintest.specs.ShouldSpec
+import org.skife.jdbi.v2.StatementContext
+import java.sql.ResultSet
+
+class <%= @model.name %>MapperTest : ShouldSpec() {
+  
+    fun resultSet(): ResultSet {
+        val rs = mock<ResultSet>()
+        whenever(rs.getLong("id")).thenReturn(42L)
+        //TODO: fill in values
+        <% @model.model_fields.map do |field|%>whenever(rs.get<%=field.codeType%>("<%=field.snake_case%>")).thenReturn("test_<%= field.name %>")
+        <%end%>return rs
+    }
+
+    fun context(): StatementContext {
+        val context = mock<StatementContext>()
+        return context
+    }
+
+    fun subject(): <%= @model.name %>Mapper {
+        return <%= @model.name %>Mapper()
+    }
+
+    init {
+        "<%= @model.name %>Mapper().map" {
+            should("generate <%= @model.name %>") {
+                subject().map(0, resultSet(), context()).id shouldEqual 42L
+                <% @model.model_fields.map do |field|%>subject().map(0, resultSet(), context()).<%= field.name %> shouldEqual "test_<%= field.name %>"
+                <%end%>}
+        }
+    }
+}
