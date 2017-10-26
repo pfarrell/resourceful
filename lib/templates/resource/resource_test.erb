@@ -1,0 +1,61 @@
+package <%= @model.package %>.resources
+
+import com.cursor.models.<%= @model.name %>
+import com.cursor.models.CursorPrincipal
+import com.cursor.services.<%= @model.name %>Service
+import com.nhaarman.mockito_kotlin.any
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.whenever
+import io.kotlintest.matchers.shouldBe
+import io.kotlintest.matchers.shouldEqual
+import io.kotlintest.specs.ShouldSpec
+
+class <%= @model.name %>ResourceTest : ShouldSpec() {
+
+    fun <%= @model.name.downcase %>(): <%= @model.name %> {
+        return <%= @model.name %>(id = 1, 
+        <% @model.model_fields.each_with_index do |field, i|%><%=field.name%> = "test_<%= field.name %>"<%= ',' if i < (@model.model_fields.size - 1) %> 
+        <% end %>)
+    }
+
+    fun principal(): CursorPrincipal {
+        return CursorPrincipal(1, 1)
+    }
+
+    fun <%= @model.name.downcase %>Service(): <%= @model.name%>Service {
+        val mock = mock<<%= @model.name%>Service>()
+        return mock
+    }
+  
+    fun subject(<%= @model.name.downcase %>Service: <%= @model.name%>Service = <%= @model.name.downcase %>Service()): <%= @model.name %>Resource {
+      return <%= @model.name %>Resource(<%= @model.name.downcase %>Service)
+    }
+
+    init { 
+        "<%= @model.name.downcase %>Resource()" {
+            should("get <%= @model.name.downcase.pluralize %> by id") {
+                val <%= @model.name.downcase %> = <%= @model.name.downcase %>()
+                val sub = subject()
+                val principal = principal()
+                whenever(sub.<%= @model.name.downcase %>Service.find(1, principal)).thenReturn(<%= @model.name.downcase %>)
+                sub.get(1, principal).entity shouldEqual(<%= @model.name.downcase %>)
+            }
+
+            should("get <%= @model.name.downcase.pluralize %> by organization") {
+                val <%= @model.name.downcase %> = <%= @model.name.downcase %>()
+                val sub = subject()
+                val principal = principal()
+                whenever(sub.<%= @model.name.downcase %>Service.findByOrganization(principal)).thenReturn(listOf(<%= @model.name.downcase %>))
+                sub.get(principal).entity shouldEqual(listOf(<%= @model.name.downcase %>))
+            }
+
+            should("create <%= @model.name.downcase.pluralize %>") {
+                val <%= @model.name.downcase %> = <%= @model.name.downcase %>()
+                val sub = subject()
+                val principal = principal()
+                whenever(sub.<%= @model.name.downcase %>Service.create(<%= @model.name.downcase %>, principal)).thenReturn(<%= @model.name.downcase %>)
+                sub.create(<%= @model.name.downcase %>, principal).entity shouldEqual(<%= @model.name.downcase %>)
+            }
+        }
+    } 
+}
