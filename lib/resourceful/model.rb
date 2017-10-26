@@ -21,12 +21,17 @@ class Field
 end
 
 class Model
-	attr_accessor :yaml, :db_table, :package, :name, :fields
+	attr_accessor :yaml, :db_table, :package, :name, :model_fields, :link_fields
 
 	def initialize(hsh)
 		@name = hsh['name'].capitalize
-    @db_table = hsh['db_table']
+    @db_table = hsh['dbTable']
 		@package = 'com.cursor'
-		@fields = hsh['fields'].map{|a| a.map{|k,v| Field.new(k, v)} }.flatten
+		@model_fields = hsh['modelFields'].map{|a| a.map{|k,v| Field.new(k, v)} }.flatten
+		@link_fields = hsh['linkFields'].map{|a| a.map{|k,v| Field.new(k, v)} }.flatten
 	end
+
+	def fields
+    @model_fields + @link_fields
+  end
 end

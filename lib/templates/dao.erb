@@ -2,6 +2,7 @@ package <%= @model.package %>.dao
 
 import com.cursor.mappers.<%= @model.name %>Mapper
 import com.cursor.models.<%= @model.name %>
+import com.cursor.models.CursorPrincipal
 import org.skife.jdbi.v2.sqlobject.Bind
 import org.skife.jdbi.v2.sqlobject.BindBean
 import org.skife.jdbi.v2.sqlobject.GetGeneratedKeys
@@ -13,15 +14,22 @@ import org.skife.jdbi.v2.sqlobject.customizers.RegisterMapper
 interface <%= @model.name %>DAO {
 
     companion object {
-        const val FIELD_NAMES: String = "<%= @model.fields.map(&:name).join(', ') %>"
-		const val FIELD_VALUES: String = "<%= @model.fields.map{|x| ":#{x.name}" }.join(', ') %>"
-		const val ALL_FIELDS: String = "id, $FIELD_NAMES"
+        const val FIELD_NAMES: String = "<%= (@model.fields).map(&:snake_case).join(', ') %>"
+        const val FIELD_VALUES: String = "<%= (@model.fields).map{|x| ":#{x.name}" }.join(', ') %>"
+        const val ALL_FIELDS: String = "id, $FIELD_NAMES"
     }
   
     @SqlUpdate("INSERT INTO <%= @model.db_table %>($FIELD_NAMES) VALUES ($FIELD_VALUES)")
     @GetGeneratedKeys
-    fun insert(@BindBean <%= @model.name.downcase %>: <%= @model.name %>): Long
+    fun insert(@BindBean <%= @model.name.downcase %>: <%= @model.name %>, @BindBean principal: CursorPrincipal): Long
 
-    @SqlQuery("SELECT $ALL_FIELDS FROM <%= @model.name.downcase %> WHERE id = :id")
-    fun find(@Bind("id") id: Long): <%= @model.name %>?
+    @SqlQuery("SELECT $ALL_FIELDS FROM <%= @model.db_table %> WHERE id = :id and organization_id = :organizationId")
+    fun find(@Bind("id") id: Long, @BindBean principal: CursorPrincipal): <%= @model.name %>?
+
+    @SqlQuery("SELECT $ALL_FIELDS FROM <%= @model.db_table %> WHERE organization_id = :organizationId")
+    fun findByOrganization(@BindBean principal: CursorPrincipal): List<<%= @model.name %>>
+
+    @SqlQuery("UPDATE <%= @model.db_table %> SET <%= @model.model_fields.map{|field| "#{field.snake_case} = :#{field.name}"}.join(", ") %> " + 
+              "WHERE id = :id AND <%= @model.link_fields.map{|field| "#{field.snake_case} = :#{field.name}"}.join(" AND ") %>")
+    fun update(@BindBean <%= @model.name.downcase %>: <%= @model.name %>, principal: CursorPrincipal) 
 }

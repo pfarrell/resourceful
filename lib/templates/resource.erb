@@ -24,6 +24,13 @@ import javax.ws.rs.core.Response.Status
 class <%= @model.name %>Resource(internal val <%= @model.name.downcase %>Service: <%= @model.name %>Service) {
   
     @GET
+		fun get(@Auth principal: CursorPrincipal): Response {
+		    return <%= @model.name.downcase %>Service.findByOrganization(principal)?.let {
+			      Response.ok(it).build()
+			  } ?: Response.status(Status.BAD_REQUEST).build()
+		}
+
+    @GET
 		@Path("{id}")
 		fun get(@PathParam("id") id: Long, @Auth principal: CursorPrincipal): Response {
 		    return <%= @model.name.downcase %>Service.find(id, principal)?.let {
