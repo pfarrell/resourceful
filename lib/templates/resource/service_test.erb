@@ -1,0 +1,109 @@
+package <%= @model.package %>.resources
+
+import com.cursor.models.<%= @model.name %>
+import com.cursor.models.CursorPrincipal
+import com.cursor.daos.<%= @model.name %>DAO
+import com.cursor.exceptions.RecordNotFoundException
+import com.cursor.services.<%= @model.name %>ServiceImpl
+import com.nhaarman.mockito_kotlin.spy
+import com.nhaarman.mockito_kotlin.times
+import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.whenever
+import io.kotlintest.matchers.shouldEqual
+import io.kotlintest.matchers.shouldThrow
+import io.kotlintest.specs.ShouldSpec
+
+class <%= @model.name %>ServiceImplTest : ShouldSpec() {
+
+    fun <%= @model.name.downcase %>(): <%= @model.name %> {
+        return <%= @model.name %>(id = 1, 
+        <% @model.model_fields.each_with_index do |field, i|%><%=field.name%> = "test_<%= field.name %>"<%= ',' if i < (@model.model_fields.size - 1) %> 
+        <% end %>)
+    }
+
+    fun principal(): CursorPrincipal {
+        return CursorPrincipal(1, 1)
+    }
+
+    fun <%= @model.name.downcase %>DAO(): <%= @model.name%>DAO{
+        val dao = spy<<%= @model.name%>DAO>()
+        return dao
+    }
+  
+    fun subject(<%= @model.name.downcase %>DAO: <%= @model.name%>DAO = <%= @model.name.downcase %>DAO()): <%= @model.name %>ServiceImpl {
+      return <%= @model.name %>ServiceImpl(<%= @model.name.downcase %>DAO)
+    }
+
+    init { 
+        "<%= @model.name.downcase %>Service()" {
+            should("get <%= @model.name.downcase.pluralize %> by id") {
+                val <%= @model.name.downcase %> = <%= @model.name.downcase %>()
+                val sub = subject()
+                val principal = principal()
+                whenever(sub.<%= @model.name.downcase %>DAO.find(1, principal)).thenReturn(<%= @model.name.downcase %>)
+                sub.find(1, principal) shouldEqual(<%= @model.name.downcase %>)
+                verify(sub.<%= @model.name.downcase %>DAO, times(1)).find(1, principal)
+            }
+            
+            should("throw RecordNotFoundException when having problems finding <%= @model.name.downcase.pluralize %> by id") {
+                shouldThrow<RecordNotFoundException> {
+                   val <%= @model.name.downcase %> = <%= @model.name.downcase %>()
+                   val sub = subject()
+                   val principal = principal()
+                   whenever(sub.<%= @model.name.downcase %>DAO.find(1, principal)).thenReturn(null)
+                   sub.find(1, principal)
+                }
+            }
+            
+            should("get <%= @model.name.downcase.pluralize %> by organization") {
+                val <%= @model.name.downcase %> = <%= @model.name.downcase %>()
+                val sub = subject()
+                val principal = principal()
+                whenever(sub.<%= @model.name.downcase %>DAO.findByOrganization(principal)).thenReturn(listOf(<%= @model.name.downcase %>))
+                sub.findByOrganization(principal) shouldEqual(listOf(<%= @model.name.downcase %>))
+            }
+
+            should("create <%= @model.name.downcase.pluralize %>") {
+                val <%= @model.name.downcase %> = <%= @model.name.downcase %>()
+                val sub = subject()
+                val principal = principal()
+                whenever(sub.<%= @model.name.downcase %>DAO.insert(<%= @model.name.downcase %>, principal)).thenReturn(42L)
+                whenever(sub.<%= @model.name.downcase %>DAO.find(42L, principal)).thenReturn(<%= @model.name.downcase %>)
+                sub.create(<%= @model.name.downcase %>, principal) shouldEqual(<%= @model.name.downcase %>)
+                verify(sub.<%= @model.name.downcase %>DAO, times(1)).insert(<%= @model.name.downcase %>, principal)
+            }
+            
+            should("get RecordNotFoundException when problem creating <%= @model.name.downcase.pluralize %>") {
+                shouldThrow<RecordNotFoundException> {
+                    val <%= @model.name.downcase %> = <%= @model.name.downcase %>()
+                    val sub = subject()
+                    val principal = principal()
+                    whenever(sub.<%= @model.name.downcase %>DAO.insert(<%= @model.name.downcase %>, principal)).thenReturn(42L)
+                    whenever(sub.<%= @model.name.downcase %>DAO.find(42L, principal)).thenReturn(null)
+                    sub.create(<%= @model.name.downcase %>, principal)
+                }
+            }
+
+            should("update <%= @model.name.downcase.pluralize %>") {
+                val <%= @model.name.downcase %> = <%= @model.name.downcase %>()
+                val sub = subject()
+                val principal = principal()
+                whenever(sub.<%= @model.name.downcase %>DAO.update(<%= @model.name.downcase %>, principal)).thenReturn(1L)
+                whenever(sub.<%= @model.name.downcase %>DAO.find(1L, principal)).thenReturn(<%= @model.name.downcase %>)
+                sub.update(<%= @model.name.downcase %>, principal) shouldEqual(<%= @model.name.downcase %>)
+                verify(sub.<%= @model.name.downcase %>DAO, times(1)).update(<%= @model.name.downcase %>, principal)
+            }
+            
+            should("get RecordNotFoundException when problem updating <%= @model.name.downcase.pluralize %>") {
+                shouldThrow<RecordNotFoundException> {
+                    val <%= @model.name.downcase %> = <%= @model.name.downcase %>()
+                    val sub = subject()
+                    val principal = principal()
+                    whenever(sub.<%= @model.name.downcase %>DAO.update(<%= @model.name.downcase %>, principal)).thenReturn(1L)
+                    whenever(sub.<%= @model.name.downcase %>DAO.find(42L, principal)).thenReturn(null)
+                    sub.update(<%= @model.name.downcase %>, principal)
+                }
+            }
+        }
+    } 
+}
