@@ -1,4 +1,4 @@
-package <%= @model.package %>.dao
+package <%= @model.package %>.daos
 
 import com.cursor.mappers.<%= @model.name %>Mapper
 import com.cursor.models.<%= @model.name %>
@@ -31,5 +31,5 @@ interface <%= @model.name %>DAO {
 
     @SqlQuery("UPDATE <%= @model.db_table %> SET <%= @model.model_fields.map{|field| "#{field.snake_case} = :#{field.name}"}.join(", ") %> " + 
               "WHERE id = :id AND <%= @model.link_fields.map{|field| "#{field.snake_case} = :#{field.name}"}.join(" AND ") %>")
-    fun update(@BindBean <%= @model.name.downcase %>: <%= @model.name %>, principal: CursorPrincipal) 
+    fun update(@BindBean <%= @model.name.downcase %>: <%= @model.name %>, principal: CursorPrincipal): Long 
 }

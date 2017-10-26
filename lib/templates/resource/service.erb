@@ -1,6 +1,6 @@
 package <%= @model.package %>.services
 
-import com.cursor.dao.<%= @model.name %>DAO
+import com.cursor.daos.<%= @model.name %>DAO
 import com.cursor.models.<%= @model.name %>
 import com.cursor.models.CursorPrincipal
 import com.cursor.exceptions.RecordNotFoundException
@@ -14,20 +14,20 @@ interface <%= @model.name %>Service {
 
 class <%= @model.name %>ServiceImpl(val <%= @model.name.downcase %>DAO: <%= @model.name %>DAO) : <%= @model.name %>Service {
 
-    override fun find(id: Long, principal: CursorPrincipal): <%= @model.name %>? {
-        return <%= @model.name.downcase %>DAO.find(id, principal)
+    override fun find(id: Long, principal: CursorPrincipal): <%= @model.name %> {
+        return <%= @model.name.downcase %>DAO.find(id, principal)?.let { it } ?: throw RecordNotFoundException()
     }
 
     override fun findByOrganization(principal: CursorPrincipal): List<<%= @model.name %>> {
         return <%= @model.name.downcase %>DAO.findByOrganization(principal)
     }
 
-    override fun create(<%= @model.name.downcase %>: <%= @model.name %>, principal: CursorPrincipal): <%= @model.name %>? {
+    override fun create(<%= @model.name.downcase %>: <%= @model.name %>, principal: CursorPrincipal): <%= @model.name %> {
         val id = <%= @model.name.downcase %>DAO.insert(<%= @model.name.downcase %>, principal)
         return find(id, principal)
     }
 
-    override fun update(<%= @model.name.downcase %>: <%= @model.name %>, principal: CursorPrincipal): <%= @model.name %>? {
+    override fun update(<%= @model.name.downcase %>: <%= @model.name %>, principal: CursorPrincipal): <%= @model.name %> {
         <%= @model.name.downcase %>DAO.update(<%= @model.name.downcase %>, principal)
         return find(<%= @model.name.downcase %>.id, principal)
     }
