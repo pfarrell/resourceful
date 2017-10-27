@@ -14,7 +14,7 @@ class <%= @model.name %>MapperTest : ShouldSpec() {
         val rs = mock<ResultSet>()
         whenever(rs.getLong("id")).thenReturn(42L)
         //TODO: fill in values
-        <% @model.model_fields.map do |field|%>whenever(rs.get<%=field.codeType%>("<%=field.snake_case%>")).thenReturn("test_<%= field.name %>")
+        <% @model.fields.each_with_index do |field, i|%>whenever(rs.get<%=field.codeType%>("<%=field.snake_case%>")).thenReturn(<%= field.sample_data(i) %>)
         <%end%>return rs
     }
 
@@ -31,7 +31,7 @@ class <%= @model.name %>MapperTest : ShouldSpec() {
         "<%= @model.name %>Mapper().map" {
             should("generate <%= @model.name %>") {
                 subject().map(0, resultSet(), context()).id shouldEqual 42L
-                <% @model.model_fields.map do |field|%>subject().map(0, resultSet(), context()).<%= field.name %> shouldEqual "test_<%= field.name %>"
+                <% @model.fields.each_with_index do |field, i|%>subject().map(0, resultSet(), context()).<%= field.name %> shouldEqual <%= field.sample_data(i)%>
                 <%end%>}
         }
     }

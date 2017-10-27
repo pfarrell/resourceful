@@ -17,7 +17,7 @@ class <%= @model.name %>ServiceImplTest : ShouldSpec() {
 
     fun <%= @model.name.downcase %>(): <%= @model.name %> {
         return <%= @model.name %>(id = 1, 
-        <% @model.model_fields.each_with_index do |field, i|%><%=field.name%> = "test_<%= field.name %>"<%= ',' if i < (@model.model_fields.size - 1) %> 
+        <% @model.fields.each_with_index do |field, i|%><%=field.name%> = <%= field.sample_data(i) %><%= ',' if i < (@model.fields.size - 1) %> 
         <% end %>)
     }
 

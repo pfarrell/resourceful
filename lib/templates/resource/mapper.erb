@@ -11,8 +11,7 @@ class <%= @model.name %>Mapper : ResultSetMapper<<%= @model.name %>> {
     @Throws(SQLException::class)
     override fun map(index: Int, resultSet: ResultSet, ctx: StatementContext?): <%= @model.name %> {
         return <%= @model.name %>(id = resultSet.getLong("id"),
-        <% @model.model_fields.each_with_index do |field, i| %><%= field.name %> = resultSet.get<%= field.codeType %>("<%= field.snake_case %>")<%= ',' if i < (@model.model_fields.size - 1) %>
-        <% end %>
-        )
+        <% @model.fields.each_with_index do |field, i| %><%= field.name %> = resultSet.get<%= field.codeType %>("<%= field.snake_case %>")<%= ',' if i < (@model.fields.size - 1) %>
+        <% end %>)
     }
 }  

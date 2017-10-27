@@ -4,6 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty
 
 data class <%= @model.name.capitalize %>(
     @get:JsonProperty("id") @JsonProperty("id") val id: Long,
-    <% @model.model_fields.each_with_index do |field, i| %>@get:JsonProperty("<%= field.snake_case %>") @JsonProperty("<%= field.snake_case %>") val <%= field.name %>: <%= field.codeType %><%= ',' if i < (@model.model_fields.size - 1) %>
+    <% @model.fields.each_with_index do |field, i| %>@get:JsonProperty("<%= field.snake_case %>") @JsonProperty("<%= field.snake_case %>") val <%= field.name %>: <%= field.codeType %><%= ',' if i < (@model.fields.size - 1) %>
     <% end %>
 )
