@@ -1,9 +1,9 @@
 package <%= @model.package %>.services
 
 import com.cursor.daos.<%= @model.name %>DAO
+import com.cursor.exceptions.RecordNotFoundException
 import com.cursor.models.<%= @model.name %>
 import com.cursor.models.CursorPrincipal
-import com.cursor.exceptions.RecordNotFoundException
 
 interface <%= @model.name %>Service {
     fun find(id: Long, principal: CursorPrincipal): <%= @model.name %>?

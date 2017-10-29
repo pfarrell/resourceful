@@ -18,7 +18,7 @@ interface <%= @model.name %>DAO {
         const val FIELD_VALUES: String = "<%= (@model.fields).map{|x| ":#{x.name}" }.join(', ') %>"
         const val ALL_FIELDS: String = "id, $FIELD_NAMES"
     }
-  
+
     @SqlUpdate("INSERT INTO <%= @model.db_table %>($FIELD_NAMES) VALUES ($FIELD_VALUES)")
     @GetGeneratedKeys
     fun insert(@BindBean <%= @model.name.downcase %>: <%= @model.name %>, @BindBean principal: CursorPrincipal): Long
@@ -29,7 +29,7 @@ interface <%= @model.name %>DAO {
     @SqlQuery("SELECT $ALL_FIELDS FROM <%= @model.db_table %> WHERE organization_id = :organizationId")
     fun findByOrganization(@BindBean principal: CursorPrincipal): List<<%= @model.name %>>
 
-    @SqlQuery("UPDATE <%= @model.db_table %> SET <%= @model.model_fields.map{|field| "#{field.snake_case} = :#{field.name}"}.join(", ") %> " + 
-              "WHERE id = :id AND <%= @model.link_fields.map{|field| "#{field.snake_case} = :#{field.name}"}.join(" AND ") %>")
-    fun update(@BindBean <%= @model.name.downcase %>: <%= @model.name %>, principal: CursorPrincipal): Long 
+    @SqlQuery("UPDATE <%= @model.db_table %> SET <%= @model.model_fields.map{|field| "#{field.snake_case} = :#{field.name}"}.join(", ") %> " +
+            "WHERE id = :id AND <%= @model.link_fields.map{|field| "#{field.snake_case} = :#{field.name}"}.join(" AND ") %>")
+    fun update(@BindBean <%= @model.name.downcase %>: <%= @model.name %>, principal: CursorPrincipal): Long
 }

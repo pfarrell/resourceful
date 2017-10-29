@@ -3,19 +3,17 @@ package <%= @model.package %>.resources
 import com.cursor.models.<%= @model.name %>
 import com.cursor.models.CursorPrincipal
 import com.cursor.services.<%= @model.name %>Service
-import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
-import io.kotlintest.matchers.shouldBe
 import io.kotlintest.matchers.shouldEqual
 import io.kotlintest.specs.ShouldSpec
 
 class <%= @model.name %>ResourceTest : ShouldSpec() {
 
     fun <%= @model.name.downcase %>(): <%= @model.name %> {
-        return <%= @model.name %>(id = 1, 
-        <% @model.fields.each_with_index do |field, i|%><%=field.name%> = <%= field.sample_data(i)%><%= ',' if i < (@model.fields.size - 1) %> 
-        <% end %>)
+        return <%= @model.name %>(id = 42L,
+                <% @model.fields.each_with_index do |field, i|%><%=field.name%> = <%= field.sample_data(i)%><%= ',' if i < (@model.fields.size - 1) %>
+                <% end %>)
     }
 
     fun principal(): CursorPrincipal {
@@ -26,19 +24,19 @@ class <%= @model.name %>ResourceTest : ShouldSpec() {
         val mock = mock<<%= @model.name%>Service>()
         return mock
     }
-  
+
     fun subject(<%= @model.name.downcase %>Service: <%= @model.name%>Service = <%= @model.name.downcase %>Service()): <%= @model.name %>Resource {
-      return <%= @model.name %>Resource(<%= @model.name.downcase %>Service)
+        return <%= @model.name %>Resource(<%= @model.name.downcase %>Service)
     }
 
-    init { 
+    init {
         "<%= @model.name.downcase %>Resource()" {
             should("get <%= @model.name.downcase.pluralize %> by id") {
                 val <%= @model.name.downcase %> = <%= @model.name.downcase %>()
                 val sub = subject()
                 val principal = principal()
                 whenever(sub.<%= @model.name.downcase %>Service.find(1, principal)).thenReturn(<%= @model.name.downcase %>)
-                sub.get(1, principal).entity shouldEqual(<%= @model.name.downcase %>)
+                sub.get(1, principal).entity shouldEqual <%= @model.name.downcase %>
             }
 
             should("get Bad Requests when problem accessing <%= @model.name.downcase.pluralize %> by id") {
@@ -46,7 +44,7 @@ class <%= @model.name %>ResourceTest : ShouldSpec() {
                 val sub = subject()
                 val principal = principal()
                 whenever(sub.<%= @model.name.downcase %>Service.find(1, principal)).thenReturn(null)
-                sub.get(1, principal).status shouldEqual(400)
+                sub.get(1, principal).status shouldEqual 400
             }
 
             should("get <%= @model.name.downcase.pluralize %> by organization") {
@@ -54,14 +52,14 @@ class <%= @model.name %>ResourceTest : ShouldSpec() {
                 val sub = subject()
                 val principal = principal()
                 whenever(sub.<%= @model.name.downcase %>Service.findByOrganization(principal)).thenReturn(listOf(<%= @model.name.downcase %>))
-                sub.get(principal).entity shouldEqual(listOf(<%= @model.name.downcase %>))
+                sub.get(principal).entity shouldEqual listOf(<%= @model.name.downcase %>)
             }
 
             should("get Bad Requests when problem accessing <%= @model.name.downcase.pluralize %> by organization") {
                 val sub = subject()
                 val principal = principal()
                 whenever(sub.<%= @model.name.downcase %>Service.findByOrganization(principal)).thenReturn(null)
-                sub.get(principal).status shouldEqual(400) 
+                sub.get(principal).status shouldEqual 400
             }
 
             should("create <%= @model.name.downcase.pluralize %>") {
@@ -69,7 +67,7 @@ class <%= @model.name %>ResourceTest : ShouldSpec() {
                 val sub = subject()
                 val principal = principal()
                 whenever(sub.<%= @model.name.downcase %>Service.create(<%= @model.name.downcase %>, principal)).thenReturn(<%= @model.name.downcase %>)
-                sub.create(<%= @model.name.downcase %>, principal).entity shouldEqual(<%= @model.name.downcase %>)
+                sub.create(<%= @model.name.downcase %>, principal).entity shouldEqual <%= @model.name.downcase %>
             }
 
             should("get Bad Request when problem creating <%= @model.name.downcase.pluralize %>") {
@@ -77,8 +75,8 @@ class <%= @model.name %>ResourceTest : ShouldSpec() {
                 val sub = subject()
                 val principal = principal()
                 whenever(sub.<%= @model.name.downcase %>Service.create(<%= @model.name.downcase %>, principal)).thenReturn(null)
-                sub.create(<%= @model.name.downcase %>, principal).status shouldEqual(400)
+                sub.create(<%= @model.name.downcase %>, principal).status shouldEqual 400
             }
         }
-    } 
+    }
 }

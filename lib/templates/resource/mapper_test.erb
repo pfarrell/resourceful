@@ -2,14 +2,13 @@ package <%= @model.package %>.mappers
 
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
-import io.kotlintest.matchers.shouldBe
 import io.kotlintest.matchers.shouldEqual
 import io.kotlintest.specs.ShouldSpec
 import org.skife.jdbi.v2.StatementContext
 import java.sql.ResultSet
 
 class <%= @model.name %>MapperTest : ShouldSpec() {
-  
+
     fun resultSet(): ResultSet {
         val rs = mock<ResultSet>()
         whenever(rs.getLong("id")).thenReturn(42L)
