@@ -3,14 +3,7 @@
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column> 
-            <column name="organization_id" type="bigint">
-                <constraints nullable="false" foreignKeyName="fk_articles_organization_id"
-                             referencedTableName="organizations" referencedColumnNames="id"/>
-            </column>
-            <column name="user_id" type="bigint">
-                <constraints nullable="false" foreignKeyName="fk_articles_user_id"
-                             referencedTableName="users" referencedColumnNames="id"/>
-            </column><% @model.model_fields.each_with_index do |field, i| %>
+            <% @model.model_fields.each_with_index do |field, i| %>
             <column name="<%= field.snake_case %>" type="<%= field.dbType %>">
         <constraints nullable="false"/>
             </column> <% end %>

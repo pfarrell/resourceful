@@ -14,6 +14,7 @@ def generate(model, template_path, out_dir)
   File.write("#{out_dir}", str)
 end
 
+byebug
 
 yml = YAML.load_file(ARGV[0])
 @model = Model.new(yml)

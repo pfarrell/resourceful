@@ -35,8 +35,8 @@ class Model
   def initialize(hsh) @name = hsh['name'].capitalize
     @db_table = hsh['dbTable']
     @package = 'com.cursor'
-    @model_fields = hsh['modelFields'].map{|a| a.map{|k,v| Field.new(k, v)} }.flatten
-    @link_fields = hsh['linkFields'].map{|a| a.map{|k,v| Field.new(k, v)} }.flatten
+    @model_fields = hsh['modelFields'] ? hsh['modelFields'].map{|a| a.map{|k,v| Field.new(k, v)} }.flatten : []
+    @link_fields = hsh['linkFields'] ? hsh['linkFields'].map{|a| a.map{|k,v| Field.new(k, v)} }.flatten : []
   end
 
   def fields
